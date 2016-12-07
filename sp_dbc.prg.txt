@@ -1,0 +1,171 @@
+*SET STEP ON 
+Procedure dbc_BeforeDBSetProp(cName, cType, cProperty, ePropertyValue)
+*Just before DBSetProp() executes. Return .F. to prevent property value from being set.
+
+Release glExeRunning
+Public glExeRunning
+Local lReturn As Boolean
+setpath()
+glExeRunning=Application.StartMode()
+If (glExeRunning)=0&&
+	If Upper(cType)=Upper("Database")
+
+		Do Curdir()+"eikondataacces.App"
+
+		If _Screen.gIsValid Then
+			lReturn = .T.
+		Else
+			=Messagebox("Clave es Invalida. Accion Denegada",0+16,"Clave Invalida.")
+			lReturn = .F.
+		Endif
+
+	Endif
+	Return lReturn
+
+Endif
+
+Endproc
+
+
+Procedure dbc_BeforeModifyConnection(cConnectionName)
+*Just before a connection is modified. Return .F. to prevent modification.
+**Set Step On
+Release glExeRunning
+Public glExeRunning
+*Set Step On
+Local lReturn As Boolean
+setpath()
+glExeRunning=Application.StartMode()
+If (glExeRunning)=0&&
+
+*	Set Step On
+*	Do eikondataacces.App WITH "Conn"
+	Do Curdir()+"eikondataacces.App" With "Conn"
+
+	Return .F.
+Endif
+Endproc
+
+
+*!*	Procedure dbc_BeforeOpenTable(cTableName)
+*!*	*Just before a table or view is opened. Return .F. to prevent table or view being opened.
+*!*	*Set Step On
+*!*	*** Check for Run Mode
+*!*	Release glExeRunning
+*!*	Public glExeRunning
+
+*!*	glExeRunning=Application.StartMode()
+
+
+*!*	If (glExeRunning)=0
+*!*		Do Form Dataacces To lcReturn
+
+*!*		If Vartype(lcReturn) <> 'C' Then
+*!*			Return .F.
+*!*		Endif
+
+
+*!*		If Alltrim(lcReturn)='go2Lock' Then
+*!*			Return .T.
+*!*		Else
+*!*			Return .F.
+*!*		Endif
+
+*!*	Endif
+
+*!*	Endproc
+
+Procedure dbc_OpenData(cDatabaseName, lExclusive, lNoupdate, lValidate)
+*Immediately after DBC is opened.
+*Set Step On
+*** Check for Run Mode
+Release glExeRunning
+Public glExeRunning
+Local lReturn As Boolean
+setpath()
+
+glExeRunning=Application.StartMode()
+
+
+If (glExeRunning)=0&& <> 1 Or(glExeRunning <>4)
+
+	Do Curdir()+"eikondataacces.App"
+
+
+	If _Screen.gIsValid Then
+		lReturn = .T.
+	Else
+		=Messagebox("Clave es Invalida. Accion Denegada",0+16,"Clave Invalida.")
+		lReturn = .F.
+	Endif
+
+	Return lReturn
+
+Endif
+Endproc
+
+*!*	Procedure dbc_BeforeDBGetProp(cName, cType, cProperty)
+*!*	*Just before DBGetProp() executes. Return .F. to prevent property value from being read.
+
+*!*	Release glExeRunning
+*!*	Public glExeRunning
+*!*	Local lReturn As Boolean
+*!*	glExeRunning=Application.StartMode()
+*!*	If (glExeRunning)=0&&
+*!*		If Upper(cType)=Upper("connection")
+*!*			SET STEP ON
+*!*			Do eikondataacces.App
+
+*!*			If _Screen.gIsValid Then
+*!*				lReturn = .T.
+*!*			Else
+*!*				=Messagebox("Clave es Invalida. Accion Denegada",0+16,"Clave Invalida.")
+*!*				lReturn = .F.
+*!*			Endif
+
+*!*		Endif
+*!*		Return lReturn
+*!*	Endif
+*!*	Endproc
+
+Procedure dbc_BeforeModifyProc()
+*Just before a DBC stored procedure is modified.
+Release glExeRunning
+Public glExeRunning
+Local lReturn As Boolean
+glExeRunning=Application.StartMode()
+setpath()
+If (glExeRunning)=0&&
+
+	Do Curdir()+"eikondataacces.App"
+
+
+*Set Step On
+
+	If _Screen.gIsValid Then
+		lReturn = .T.
+	Else
+		=Messagebox("Clave es invalida. Accion denegada",0+16,"Clave Invalida.")
+		lReturn = .F.
+	Endif
+
+	Return lReturn
+Endif
+
+
+Endproc
+
+
+
+PROCEDURE SetPath
+	Set Path To Project,Exe,vsirhv7sql ADDITIVE 
+	lcSys16 = Sys(16, 1)
+	lcProgram = Substr(lcSys16, At(":", lcSys16) - 1)
+
+	If !Empty(lcProgram)
+		Cd Left(lcProgram, Rat("\", lcProgram))
+		*Cd ..
+	Endif
+	lsCurDir=Curdir()
+
+Endpro
