@@ -5,7 +5,7 @@ incluye tambien un formulario que se ejecutara cuando tratemos de acceder o modi
 
 Pasos para la aplicacion: 
 1-Hacer una copia de la base de datos(.dbc,.dct, dcx) - > Por si acaso :)
-1-Poner la aplicacion  "eikondataacces.app" en el folder que contiene  la base de datos(.DBC), conjuntamente con el icono
+1-Poner la aplicacion  "Dataacces.app" en el folder que contiene  la base de datos(.DBC), conjuntamente con el icono
 2-Abrir la base  de datos con el comando [open database TuBaseDeDatos.dbc]
 3-Ejecuta el comando [ MODIFY PROCEDURE ], en la venta de comando que aparece, pegar el codigo que esta en el archivo "sp_dbc.prg" guardar y cerrar
 4-Ejecutar el comando [ DBSetProp("datasql",'Database','DBCEvents',.t.) ] para habilitar los eventos en la base de datos
