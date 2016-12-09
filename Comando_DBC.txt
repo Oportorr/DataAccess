@@ -1,0 +1,6 @@
+*Para habilitar el evento
+DBSetProp("datasql",'Database','DBCEvents',.t.)
+
+
+*Para inahabilitar el evento
+DBSetProp("datasql",'Database','DBCEvents',.f.)

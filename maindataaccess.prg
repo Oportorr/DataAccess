@@ -100,7 +100,7 @@ Endfunc
 *!*	* Historia de Modificaciones:
 *!*	* Septiembre 11, 2007 : Creado [Oscar Portorreal]
 *!*	****************************************************************************
-*_cliptext=Adecode("2Pux}}YDCEJ}")
+*_cliptext=Adecode("8V{~ƒƒ_…JIKP")
 Function Adecode(tcKeyWord)
 	*Set Step On
 	lcEnc=Alltrim(tcKeyWord)

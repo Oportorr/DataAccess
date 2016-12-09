@@ -1,0 +1,47 @@
+Set Step On
+
+
+Dimension aryFiles(1)
+*=GetAllFiles(Getdir(), @aryFiles)
+=GetAllFiles(curdi(), @aryFiles)
+Set Step On
+
+Function GetAllFiles(cDirectory, aryParam)
+	Local Array aryTemp(1,5)
+	Local nCount, nMax, nLen, cFile
+
+	Set Default To (cDirectory)
+
+	=Adir(aryTemp, "*.*", "AHRSD", 1)
+	nMax = Alen(aryTemp,1)
+	For nCount = 1 To nMax
+		cFile = Alltrim(aryTemp(nCount,1))
+		If !(cFile == ".") And !(cFile == "..")
+			If "D" $ aryTemp(nCount,5)
+				=GetAllFiles(Addbs(cDirectory + cFile), @aryParam)
+			Else
+				nLen = Alen(aryParam)
+				If !Empty(aryParam(nLen))
+					Dimension aryParam(nLen + 1)
+					nLen = nLen + 1
+				Endif
+				aryParam(nLen) = cDirectory + cFile
+			Endif
+			? cDirectory + cFile
+		Endif
+	Endfor
+Endfunc
+
+
+
+*!*	gnDbcnumber = Adir(gaDatabase, '*.*')  && Create array
+
+*!*	Clear
+
+*!*	For nCount = 1 To gnDbcnumber  && Loop for number of databases
+
+*!*		? gaDatabase(nCount,1)  && Display database names
+
+*!*	Endfor
+
+*!*	Set Path To Home( )  && Set path to Visual FoxPro directory

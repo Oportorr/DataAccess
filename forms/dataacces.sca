@@ -1,0 +1,218 @@
+SCCTEXT Version 4.0.0.2
+PLATFORM C(8,0),UNIQUEID C(10,0),TIMESTAMP N(10,0),CLASS M(4,0),CLASSLOC M(4,0),BASECLASS M(4,0),OBJNAME M(4,0),PARENT M(4,0),PROPERTIES M(4,0),PROTECTED M(4,0),METHODS M(4,0),OBJCODE M(4,0),OLE M(4,0),OLE2 M(4,0),RESERVED1 M(4,0),RESERVED2 M(4,0),RESERVED3 M(4,0),RESERVED4 M(4,0),RESERVED5 M(4,0),RESERVED6 M(4,0),RESERVED7 M(4,0),RESERVED8 M(4,0),USER M(4,0)
+1252
+
+[ RECORD]
+[PLATFORM] COMMENT 
+[UNIQUEID] Screen    
+[START RESERVED1]
+VERSION =   3.00[END RESERVED1]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC2
+[CLASS] dataenvironment
+[BASECLASS] dataenvironment
+[OBJNAME] Dataenvironment
+[START PROPERTIES]
+DataSource = .NULL.
+Height = 0
+Left = 0
+Name = "Dataenvironment"
+Top = 0
+Width = 0
+[END PROPERTIES]
+[START RESERVED2]
+1[END RESERVED2]
+[START RESERVED4]
+1[END RESERVED4]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC3
+[CLASS] form
+[BASECLASS] form
+[OBJNAME] Form1
+[START PROPERTIES]
+AlwaysOnBottom = .F.
+AlwaysOnTop = .T.
+AutoCenter = .T.
+Caption = "Seguridad"
+ControlBox = .F.
+DoCreate = .T.
+HalfHeightCaption = .F.
+Height = 101
+MaxButton = .F.
+MinButton = .F.
+Name = "Form1"
+ShowWindow = 1
+Width = 253
+WindowState = 0
+WindowType = 1
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Init
+PARAMETERS cType
+PUBLIC oForm as Form
+oForm=thisform
+IF VARTYPE(cType)="C"
+	If!EMPTY(cType)
+		Thisform.pctype="CONN"
+	Endif
+Endif
+ENDPROC
+PROCEDURE KeyPress
+LPARAMETERS nKeyCode, nShiftAltCtrl
+IF nKeyCode= 27
+	Thisform.Release
+ENDIF 
+ENDPROC
+PROCEDURE QueryUnload
+*SET STEP ON 
+CLEAR EVENTS
+ENDPROC
+PROCEDURE Unload
+*Set Step On
+lcReturnValue=Thisform.pcreturnvalue
+If !Empty(lcReturnValue) Then
+*!*		If (Vartype(Thisform.pctype)= "C");
+*!*				AND (Upper(Thisform.pctype)="CONN")
+*!*			Thisform.Visible=.F.
+*!*			Do Form dataconexion.scx
+*	Thisform.Release()
+*!*	Endif
+	CLEAR EVENTS
+	CloseApplication()
+	_Screen.gIsValid=.T.
+	Return lcReturnValue
+Else
+	CloseApplication()
+	_Screen.gIsValid=.F.
+	Return .F.
+
+Endif
+
+ENDPROC
+[END METHODS]
+[START RESERVED3]
+pcreturnvalue
+pctype
+[END RESERVED3]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC5
+[CLASS] commandbutton
+[BASECLASS] commandbutton
+[OBJNAME] Command1
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Ok"
+Height = 27
+Left = 40
+Name = "Command1"
+TabIndex = 2
+Top = 67
+Width = 84
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Click
+lcPass=Thisform.text1.Value
+
+
+If !Empty(lcPass) Then
+	lcSavedPass=GetCredentias()
+	If Alltrim(lcPass)=Alltrim(lcSavedPass)
+		_Screen.gIsValid=.T.
+		Thisform.pcreturnvalue=lcPass
+		Thisform.Release()
+	Else
+		=Messagebox('Clave No Incorrecta. Por favor trate de Nuevamente',0+16,'Error del Sistema')
+		Thisform.text1.SetFocus()
+		Thisform.text1.GotFocus()
+	Endif
+
+Else
+	=Messagebox('Clave No especificada',0+16,'Error del Sistema')
+	_Screen.gIsValid=.F.
+	Return .F.
+Endif
+
+
+
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC6
+[CLASS] commandbutton
+[BASECLASS] commandbutton
+[OBJNAME] Command2
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Cancelar"
+Height = 27
+Left = 143
+Name = "Command2"
+TabIndex = 3
+Top = 68
+Width = 84
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Click
+Thisform.Release
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC7
+[CLASS] label
+[BASECLASS] label
+[OBJNAME] Label1
+[PARENT] Form1
+[START PROPERTIES]
+BackStyle = 0
+Caption = "Inserte Clave de Segurida"
+Height = 17
+Left = 41
+Name = "Label1"
+TabIndex = 4
+Top = 12
+Width = 168
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _2FM00SMC4
+[CLASS] textbox
+[BASECLASS] textbox
+[OBJNAME] text1
+[PARENT] Form1
+[START PROPERTIES]
+FontName = "Wingdings"
+FontSize = 10
+Height = 23
+Left = 23
+Name = "text1"
+PasswordChar = "l"
+SelectOnEntry = .T.
+TabIndex = 1
+Top = 33
+Width = 208
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE LostFocus
+Thisform.command1.Click()
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] COMMENT 
+[UNIQUEID] RESERVED  
+[START PROPERTIES]
+Arial, 0, 9, 5, 15, 12, 32, 3, 0
+Wingdings, 0, 10, 12, 15, 12, 18, 3, 0
+[END PROPERTIES]
+[EOF]

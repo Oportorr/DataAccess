@@ -1,0 +1,494 @@
+SCCTEXT Version 4.0.0.2
+PLATFORM C(8,0),UNIQUEID C(10,0),TIMESTAMP N(10,0),CLASS M(4,0),CLASSLOC M(4,0),BASECLASS M(4,0),OBJNAME M(4,0),PARENT M(4,0),PROPERTIES M(4,0),PROTECTED M(4,0),METHODS M(4,0),OBJCODE M(4,0),OLE M(4,0),OLE2 M(4,0),RESERVED1 M(4,0),RESERVED2 M(4,0),RESERVED3 M(4,0),RESERVED4 M(4,0),RESERVED5 M(4,0),RESERVED6 M(4,0),RESERVED7 M(4,0),RESERVED8 M(4,0),USER M(4,0)
+1252
+
+[ RECORD]
+[PLATFORM] COMMENT 
+[UNIQUEID] Screen    
+[START RESERVED1]
+VERSION =   3.00[END RESERVED1]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MR
+[CLASS] dataenvironment
+[BASECLASS] dataenvironment
+[OBJNAME] Dataenvironment
+[START PROPERTIES]
+DataSource = .NULL.
+Height = 200
+Left = 1
+Name = "Dataenvironment"
+Top = 220
+Width = 520
+[END PROPERTIES]
+[START RESERVED2]
+1[END RESERVED2]
+[START RESERVED4]
+1[END RESERVED4]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MS
+[CLASS] form
+[BASECLASS] form
+[OBJNAME] Form1
+[START PROPERTIES]
+AutoCenter = .T.
+Caption = "Conexion a la Base de Datos"
+DoCreate = .T.
+Height = 125
+Icon = ..\eikon.ico
+MaxButton = .F.
+MinButton = .F.
+Name = "Form1"
+ShowWindow = 1
+Width = 765
+WindowState = 0
+WindowType = 1
+connstatus = .F.
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Init
+Public m.ccDataSource As String
+
+Local lcOpennedDataBAse As String
+lcOpennedDataBAse=''
+lcOpennedDataBAse=Dbc()
+If Empty(lcOpennedDataBAse)
+	=Messagebox("La Base de Datos tiene que estar abierta, favor abrir Base la Datos. ",0+16,"Data Base not open.")
+	Thisform.Release()
+	Return
+Endif
+SQLSetprop(0,"DispLogin",3)  &&Para que no ponga el Login de VFP
+******set step on  
+Create Cursor CurConecction(Con_Name c(100))
+For i = 1 To Adbobjects(aAll_Connections, "Connection")
+	Insert Into CurConecction(Con_Name) Values (aAll_Connections[i])
+Endfor
+
+Adbobjects(aAll_Connections, "Connection")
+lcConName =aAll_Connections(1)
+
+
+
+
+m.ccUserId        = Alltrim(DBGetProp(lcConName  , 'Connection', 'UserId'))
+m.ccDataSource    = Alltrim(DBGetProp(lcConName  , 'Connection', 'DataSource'))
+*Thisform.text2.Value=m.ccDataSource
+Thisform.text3.Value=m.ccUserId
+
+Release aAll_Connections
+getdatasource()
+
+
+
+
+
+*Try
+******set step on  
+
+Select CurConecction
+Thisform.combo1.RowSourceType= 6
+Thisform.combo1.RowSource='CurConecction.Con_Name'
+
+Select CurConecction
+Locate For Alltrim(CurConecction.Con_Name)=Alltrim(lcConName)
+If Found()
+	Thisform.combo1.Value=CurConecction.Con_Name
+Endif
+
+
+Select DSNLIST
+Thisform.combo2.RowSourceType= 6
+Thisform.combo2.RowSource='DSNLIST.dsn'
+
+Select DSNLIST
+Locate For Alltrim(DSNLIST.dsn)=m.ccDataSource
+If Found()
+	Thisform.combo2.Value=DSNLIST.dsn
+Endif
+
+
+*!*	Catch To oError
+*!*		Messagebox(oError.Message +" En la Linea " + Alltrim(Str(oError.Lineno)) + "Error No."+Space(1)+Alltrim(Str(oError.ErrorNo)) +Space(1)+" Procedimiento "+ oError.Procedure,16,"Error en el Programa")
+*!*	Finally
+*!*	Endtry
+
+ENDPROC
+PROCEDURE QueryUnload
+*****set step on    
+Clear Events
+CloseApplication()
+ON SHUTDOWN 
+
+ENDPROC
+PROCEDURE checkconnection
+lcConName    = alltrim(Thisform.combo1.Value)&&'Eikon_R4_SQL_OScar'
+lcDataSource = alltrim(Thisform.combo2.Value)&&"Eikon_Standard"
+lcUserid     = alltrim(Thisform.text3.Value)&&"eikon"
+lcPassword   = alltrim(Thisform.text1.Value)&&"eikon"
+******set step on     )
+
+Do Case
+	Case Empty(lcConName)
+	
+		=Messagebox("Debe de especificar la Conexion.  ",0+16,"Error en Conexion.")
+		Thisform.combo1.SetFocus()
+		Return
+
+	Case Empty(lcDataSource)
+	
+		=Messagebox("Error de especificar el Origen de Datos ",0+16,"Error en Conexion.")
+		Thisform.text2.SetFocus()
+		Return
+		
+	Case Empty(lcUserid)
+	
+		=Messagebox("Error de especificar el Usuario ",0+16,"Error en Conexion.")
+		Thisform.text3.SetFocus()
+		Return
+		
+	Case Empty(lcPassword)
+	
+		=Messagebox("Error de especificar la clave",0+16,"Error en Conexion.")
+		Thisform.text1.SetFocus()
+		Return
+
+Endcase
+
+
+nResult=SQLConnect(lcConName,lcUserid,lcPassword)
+If nResult > 0
+	=Messagebox("Conectedado Exitosamente!!",0+48,"Conexion realizada.")
+	Thisform.connstatus=.t.
+Else
+	=Messagebox("Error de Conexion. Verifica usuario o password :( ",0+16,"Error en nexion.")
+	Thisform.connstatus=.f.
+Endif
+
+ENDPROC
+PROCEDURE createconnection
+*********set step on       
+
+
+lcConName    = alltrim(Thisform.combo1.Value)&&'Eikon_R4_SQL_OScar'
+lcDataSource = alltrim(Thisform.combo2.Value)&&"Eikon_Standard"
+lcUserid     = alltrim(Thisform.text3.Value)&&"eikon"
+lcPassword   = alltrim(Thisform.text1.Value)&&"eikon"
+*********set step on        )
+
+
+
+Do Case
+Case Empty(lcConName)
+
+	=Messagebox("Debe de especificar la Conexion.  ",0+16,"Error en Conexion.")
+	Thisform.combo1.SetFocus()
+	Return
+
+Case Empty(lcDataSource)
+
+	=Messagebox("Error de especificar el Origen de Datos ",0+16,"Error en Conexion.")
+	Thisform.text2.SetFocus()
+	Return
+
+Case Empty(lcUserid)
+
+	=Messagebox("Error de especificar el Usuario ",0+16,"Error en Conexion.")
+	Thisform.text3.SetFocus()
+	Return
+
+Case Empty(lcPassword)
+
+	=Messagebox("Error de especificar la clave",0+16,"Error en Conexion.")
+	Thisform.text1.SetFocus()
+	Return
+
+Endcase
+
+
+
+********set step on        
+*Delete Connection &lcConName
+Create Connection &lcConName  Datasource &lcDataSource Userid &lcUserid  Password &lcPassword
+
+DBSetProp(lcConName, 'Connection', 'Asynchronous', .F.)
+DBSetProp(lcConName, 'Connection', 'BatchMode', .T.)
+DBSetProp(lcConName, 'Connection', 'Comment', '')
+DBSetProp(lcConName, 'Connection', 'DispLogin', 3)
+DBSetProp(lcConName, 'Connection', 'ConnectTimeOut', 60)
+DBSetProp(lcConName, 'Connection', 'DispWarnings', .F.)
+DBSetProp(lcConName, 'Connection', 'IdleTimeOut', 0)
+DBSetProp(lcConName, 'Connection', 'QueryTimeOut', 0)
+DBSetProp(lcConName, 'Connection', 'Transactions', 1)
+DBSetProp(lcConName, 'Connection', 'Database', '')
+DBSetProp(lcConName, 'Connection', 'PacketSize', 4096)
+DBSetProp(lcConName, 'Connection', 'WaitTime', 100)
+
+
+nResult=SQLConnect(lcConName,lcUserid,lcPassword)
+If nResult > 0
+*	=Messagebox("Conectedado Exitosamente!!",0+48,"Conexion realizada.")
+	=Messagebox("La Conexion ha sido guardada!",0+48,"Conexion guardada.")
+	Thisform.connstatus=.t.
+Else
+	=Messagebox("Error al guardar Conexion. Verifica usuario o password :( ",0+16,"Error en nexion.")
+	Thisform.connstatus=.f.
+Endif
+
+
+
+ENDPROC
+[END METHODS]
+[START RESERVED3]
+*checkconnection 
+*createconnection 
+connstatus
+[END RESERVED3]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MR
+[CLASS] combobox
+[BASECLASS] combobox
+[OBJNAME] Combo1
+[PARENT] Form1
+[START PROPERTIES]
+ColumnCount = 0
+FirstElement = 1
+Height = 27
+Left = 9
+Name = "Combo1"
+NumberOfElements = 0
+RowSource = ""
+RowSourceType = 0
+Top = 32
+Width = 198
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048N4
+[CLASS] combobox
+[BASECLASS] combobox
+[OBJNAME] Combo2
+[PARENT] Form1
+[START PROPERTIES]
+Height = 27
+Left = 209
+Name = "Combo2"
+ReadOnly = .F.
+RowSource = ""
+RowSourceType = 0
+Top = 33
+Width = 198
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048N2
+[CLASS] commandbutton
+[BASECLASS] commandbutton
+[OBJNAME] Command1
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Guardar"
+Height = 27
+Left = 541
+Name = "Command1"
+Top = 90
+Width = 84
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Click
+*set step on     
+Thisform.createconnection()
+If Thisform.connstatus=.F.
+	Thisform.checkconnection()
+Endif
+
+*=Messagebox("La Conexion ha sido guardada!",0+48,"Conexion guardada.")
+
+
+*!*	lcReturnValue=Thisform.text1.Value
+
+*!*	If !Empty(lcReturnValue) Then
+*!*		Thisform.pcreturnvalue=lcReturnValue
+*!*		Thisform.Release
+*!*	Else
+*!*		=Messagebox('Clave No especificada',0+16,'Error del Sistema')
+*!*		Return .F.
+*!*	Endif
+
+ENDPROC
+PROCEDURE GotFocus
+*Thisform.createconnection()
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048N3
+[CLASS] commandbutton
+[BASECLASS] commandbutton
+[OBJNAME] Command2
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Salir"
+Height = 27
+Left = 627
+Name = "Command2"
+Top = 90
+Width = 84
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Click
+Thisform.Release
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048N1
+[CLASS] commandbutton
+[BASECLASS] commandbutton
+[OBJNAME] Command3
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Verificar"
+Height = 27
+Left = 669
+Name = "Command3"
+Top = 33
+Width = 73
+[END PROPERTIES]
+[START METHODS]
+PROCEDURE Click
+****set step on     
+Thisform.checkconnection()
+ENDPROC
+[END METHODS]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MV
+[CLASS] label
+[BASECLASS] label
+[OBJNAME] Label2
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Conecciones"
+Height = 17
+Left = 9
+Name = "Label2"
+Top = 13
+Width = 108
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MX
+[CLASS] label
+[BASECLASS] label
+[OBJNAME] Label3
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Usuario"
+Height = 17
+Left = 406
+Name = "Label3"
+Top = 13
+Width = 108
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MZ
+[CLASS] label
+[BASECLASS] label
+[OBJNAME] Label4
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Origen de Datos"
+Height = 17
+Left = 209
+Name = "Label4"
+Top = 13
+Width = 108
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048N0
+[CLASS] label
+[BASECLASS] label
+[OBJNAME] Label5
+[PARENT] Form1
+[START PROPERTIES]
+Caption = "Clave"
+Height = 17
+Left = 537
+Name = "Label5"
+Top = 13
+Width = 108
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MT
+[CLASS] shape
+[BASECLASS] shape
+[OBJNAME] Shape1
+[PARENT] Form1
+[START PROPERTIES]
+BorderStyle = 1
+FillStyle = 1
+Height = 118
+Left = 5
+Name = "Shape1"
+Top = 5
+Width = 756
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MU
+[CLASS] textbox
+[BASECLASS] textbox
+[OBJNAME] Text1
+[PARENT] Form1
+[START PROPERTIES]
+FontName = "Wingdings"
+FontSize = 10
+Height = 27
+Left = 537
+Name = "Text1"
+PasswordChar = "l"
+Top = 32
+Width = 129
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] WINDOWS 
+[UNIQUEID] _4C20048MY
+[CLASS] textbox
+[BASECLASS] textbox
+[OBJNAME] Text3
+[PARENT] Form1
+[START PROPERTIES]
+Height = 27
+Left = 406
+Name = "Text3"
+Top = 32
+Width = 129
+[END PROPERTIES]
+
+[ RECORD]
+[PLATFORM] COMMENT 
+[UNIQUEID] RESERVED  
+[START PROPERTIES]
+Arial, 0, 9, 5, 15, 12, 32, 3, 0
+Wingdings, 0, 10, 12, 15, 12, 18, 3, 0
+[END PROPERTIES]
+[EOF]
