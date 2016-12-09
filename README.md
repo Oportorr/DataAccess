@@ -1,5 +1,5 @@
-# EikonDataacces
-EikonDataacces - VFP
+# Dataaccess
+Dataaccess - VFP
 
 
 La siguiente utileria es realizada con la idea de restringir un poco el acceso a nuestro contenedor de base de datos, habilitando para ello los eventos o procedimientos de la misma
@@ -11,7 +11,7 @@ Pasos para la aplicacion:
 
 1-Hacer una copia de la base de datos(.dbc,.dct, dcx) - > Por si acaso :)
 
-2-Poner la aplicacion  "eikondataacces.app" en el folder que contiene  la base de datos(.DBC), conjuntamente con el icono
+2-Poner la aplicacion  "Dataaccess.app" en el folder que contiene  la base de datos(.DBC), conjuntamente con el icono
 
 3-Abrir la base  de datos con el comando [open database TuBaseDeDatos.dbc]
 
