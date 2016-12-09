@@ -1,12 +1,12 @@
-<<<<<<< HEAD
+
 La siguiente utileria es realizada con la idea de restringir un poco el acceso a nuestro contenedor de base de datos, habilitando para ellos los eventos o procedimientos de la misma
-=======
+
 # Dataaccess
 Dataaccess - VFP
 
 
 La siguiente utileria es realizada con la idea de restringir un poco el acceso a nuestro contenedor de base de datos, habilitando para ello los eventos o procedimientos de la misma
->>>>>>> origin/master
+
 incluye tambien un formulario que se ejecutara cuando tratemos de acceder o modificar la conexion ODBC de nuestra base de datos, con el comando: [ MODIFY CONNECTION ] actualmente cualquiera puede ver la clave si ejecuta [ MODIFY CONNECTION ] desde la ventana de comando de Visual FoxPro, con esta herramienta estaremos ocultando dicha clave.
 
 
@@ -19,8 +19,8 @@ Pasos para la aplicacion:
 4-Ejecutar el comando [ DBSetProp("datasql",'Database','DBCEvents',.t.) ] para habilitar los eventos en la base de datos
 5-Cerrar la base de datos
 
-<<<<<<< HEAD
-=======
+
+
 2-Poner la aplicacion  "Dataaccess.app" en el folder que contiene  la base de datos(.DBC), conjuntamente con el icono
 
 3-Abrir la base  de datos con el comando [open database TuBaseDeDatos.dbc]
@@ -30,9 +30,9 @@ Pasos para la aplicacion:
 5-Ejecutar el comando [ DBSetProp("datasql",'Database','DBCEvents',.t.) ] para habilitar los eventos en la base de datos
 
 6-Cerrar la base de datos
->>>>>>> origin/master
 
-Desde  este momento la base datos va a pedir una contraseña cuando se habierta, o se quiera deshabilitar o habilitar los eventos de la base de datos, la contraseña por defecto es:
+
+Desde  este momento la base datos va a pedir una contraseÃ±a cuando se habierta, o se quiera deshabilitar o habilitar los eventos de la base de datos, la contraseÃ±a por defecto es:
 "EikonIn2015"   es case sensetive, puede ser cambiada dando click en el boton con imagen de llave.
 
 Hay muchos otros eventos que se pueden habilitar,tales como:
@@ -51,6 +51,6 @@ desde donde podras cambiar la conexion a la base de datos y/o asignar los difere
 
 
 [Disclaimer]
-Nota: No me hago responsable de ningun daño realizado por esta herramienta.
+Nota: No me hago responsable de ningun daÃ±o realizado por esta herramienta.
 
 Cualquier error o mejora, pueden reportarla a: oscarportorreal@gmail.com
